@@ -34,6 +34,8 @@ struct Sound {
   int k;
   int d;
   int id;
+  unsigned char type;
+  unsigned typeBeingSelected;
   int i;
   int count;
   int b1;
@@ -84,15 +86,48 @@ void sound3() {
   if (snd.i > 511) snd.i = 0;
 }
 
+const unsigned pitches[] = {
+   238, 225, 212, 200, 189, 178, 168, 159, 150, 142, 134, 126, 119
+};
+
+void sound4() {
+  // k [0-511] selects note
+  // d [0-255] selects speed (not yet)
+  // id [0-511] unused
+  // count is current sample time
+  // i is wave pos of current sound, range [0,b1*2[
+  // b1 is currently playing sound pitch
+  
+  ++snd.count;
+  ++snd.i;
+  if (snd.i > snd.b1 * 2) {
+    // note switch
+    snd.i = 0;
+    snd.b1 = pitches[snd.k / 43];
+  }
+  OCR2A = snd.i > snd.b1 ? 0 : 255;
+}
+
+#define SND_TYPES 4
+
 void makeSound() {
   if (snd.b1 == LOW) {
-    sound2();
+    if (snd.typeBeingSelected == 0) {
+      memset(&snd, 0, sizeof(snd)); // reset sound state
+      ++snd.type;
+      snd.type %= SND_TYPES;
+    }
+    snd.typeBeingSelected = 1;
+  } else {
+    snd.typeBeingSelected = 0;
   }
-  if(snd.b2 == LOW) {
-    sound();
-  }  else if (snd.b1) {
-     sound3();
-   }
+
+  switch (snd.type) {
+    case 0: sound(); break;
+    case 1: sound2(); break;
+    case 2: sound3(); break;
+    case 3: sound4(); break;
+  }
 }
 
 #ifdef DUMP
