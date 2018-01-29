@@ -1,5 +1,7 @@
 #include "lib/TimerOne.h"
 
+#include "lib/TimerOne.cpp"
+
 #define inputPin A5
 #define outputSignalP 3
 #define pot A1
