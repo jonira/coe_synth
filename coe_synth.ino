@@ -113,8 +113,9 @@ void sound4() {
 void makeSound() {
   if (snd.b1 == LOW) {
     if (snd.typeBeingSelected == 0) {
+      const unsigned char t = snd.type + 1;
       memset(&snd, 0, sizeof(snd)); // reset sound state
-      ++snd.type;
+      snd.type = t;
       snd.type %= SND_TYPES;
     }
     snd.typeBeingSelected = 1;
