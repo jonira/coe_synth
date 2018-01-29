@@ -1,4 +1,4 @@
-#include "TimerOne.h"
+#include "lib/TimerOne.h"
 
 #define inputPin A5
 #define outputSignalP 3
